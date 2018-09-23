@@ -1,6 +1,6 @@
 # Load dependencies
 import cv2
-from sklearn.preprocessing import normalize
+from sklearn import preprocessing
 from scipy.ndimage import rotate
 import numpy as np
 import random
@@ -15,7 +15,7 @@ def preprocess(image):
     :return: conditioned numpy array
     """
     grayscale = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-    normal = normalize(grayscale)
+    normal = preprocessing.normalize(grayscale)
     return normal
 
 
