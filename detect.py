@@ -2,9 +2,13 @@
 import functions
 import cv2
 from keras.models import load_model
+import pickle
 
 
 def main():
+
+    # Load one-hot-encoding matrix
+    labeler = functions.load_object('one-hot-matrix.pkl')
 
     # Load the trained model
     model = load_model('model.h5')
@@ -21,7 +25,10 @@ def main():
         image = functions.preprocess(frame)
 
         # Predict object in frame
-        result = model.predict(image, batch_size=1)
+        logits = model.predict(image, batch_size=1)
+
+        # Decode logits
+        result = labeler.inverse_transform(logits)
 
 
 if __name__ == '__main__':
