@@ -4,6 +4,7 @@ from sklearn import preprocessing
 from scipy.ndimage import rotate
 import numpy as np
 import random
+import pickle
 
 
 def preprocess(image):
@@ -60,3 +61,8 @@ def rotate_random(img):
     upper_height = dims_orig[0] + lower_height
     cropped = rotated[lower_height:upper_height, lower_width:upper_width]
     return cropped
+
+
+def save_object(obj, filename):
+    with open(filename, 'wb') as output:  # Overwrites any existing file.
+        pickle.dump(obj, output, pickle.HIGHEST_PROTOCOL)

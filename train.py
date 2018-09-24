@@ -6,6 +6,7 @@ from scipy.ndimage import imread
 import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.layers import Conv2D, Flatten, Dense
+from sklearn import preprocessing
 
 # Hyperparameters
 EPOCHS = 5
@@ -34,6 +35,12 @@ def main():
     image_paths = raw_data[:, 0]
     labels = raw_data[:, 1]
 
+    # One-hot encode labels
+    lb = preprocessing.LabelBinarizer()
+    one_hot_labels = lb.fit_transform(labels)
+    # Save transformation matrix
+    functions.save_object(lb, 'one-hot-matrix.pkl')
+
     # Load training images from directory
     images = []
     for path in image_paths:
@@ -44,18 +51,18 @@ def main():
     images = np.array([functions.preprocess(img) for img in images])
 
     # Split data into training and validation sets
-    x_train, x_valid, y_train, y_valid = train_test_split(images, labels, test_size=VALIDATION_SPLIT)
+    x_train, x_valid, y_train, y_valid = train_test_split(images, one_hot_labels, test_size=VALIDATION_SPLIT)
 
     # Augment training set with rotated and flipped images
     x_train, y_train = functions.augment_dataset(x_train, y_train)
 
     # Compile and run the neural network model
-    model.compile(loss='mse', optimizer='adam')
-    model.fit(x_train, y_train,
-              batch_size=BATCH_SIZE,
-              epochs=EPOCHS,
-              validation_data=(x_valid, y_valid))
-    model.save('model.h5')
+    # model.compile(loss='mse', optimizer='adam')
+    # model.fit(x_train, y_train,
+    #           batch_size=BATCH_SIZE,
+    #           epochs=EPOCHS,
+    #           validation_data=(x_valid, y_valid))
+    # model.save('model.h5')
 
 
 if __name__ == '__main__':
